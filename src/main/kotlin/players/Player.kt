@@ -13,8 +13,8 @@ abstract class Player(val name: String) {
     abstract fun playCard(round: Round): ICard
 
     // TODO clean this up
-    fun getValidPlays(round: Round): List<ICard> {
-        val validPlays = mutableListOf<ICard>()
+    fun getValidPlays(round: Round): Hand {
+        val validPlays = Hand()
         val leadSuit = round.currentTrick.getOrNull(0)?.suit
 
         if (hand.size == 1) validPlays.addAll(hand)

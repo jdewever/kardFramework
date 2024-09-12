@@ -21,17 +21,18 @@ class Hearts(p1: Player, p2: Player, p3: Player, p4: Player) : Game() {
 
         // Round loop, goes 13 times, aka until everyone is out of cards
         while (!currentRound.isRoundOver()) {
-            currentRound.play()
+            currentRound.playTrick()
         }
-        println("\nPoints")
-        for (player in players) {
-            println("$player: ${player.points}")
-        }
+
 
     }
 
     override fun isGameOver(): Boolean {
-        // check if anyone is >= 100 AND there is a distinct loser
-        return false
+        // if no one >= 100, no loser (yet)
+        if (players.none { it.points >= 100 }) return false
+        // get the highest score
+        val highest = players.maxOf { it.points }
+        // if there are multiple players with the highest score, continue for another round
+        return players.filter { it.points == highest }.size == 1
     }
 }

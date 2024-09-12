@@ -24,7 +24,7 @@ class Round(
         startingPlayer = player
     }
 
-    fun play() {
+    fun playTrick() {
         currentTrick = Trick(players.indexOf(startingPlayer))
         for (i in 0..<players.size) {
             val player = players[(players.indexOf(startingPlayer) + i) % 4]
@@ -35,7 +35,8 @@ class Round(
         val eater = players[currentTrick.getEaterIndex()]
         val pointsToTake = currentTrick.calculatePoints()
         eater.points += pointsToTake
-        println("Trick: $currentTrick - Eater: $eater - Points: $pointsToTake")
+//        println("Trick: $currentTrick - Eater: $eater - Points: $pointsToTake")
+//        println("${players[0].name}: ${players[0].points} - ${players[1].name}: ${players[1].points} - ${players[2].name}: ${players[2].points} - ${players[3].name}: ${players[3].points}\n")
         setStartingPlayer(players[currentTrick.getEaterIndex()])
     }
 

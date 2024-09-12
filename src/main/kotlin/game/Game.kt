@@ -8,12 +8,15 @@ abstract class Game {
 
     fun startGame() {
         var currentRound = 0
-        /*while (isGameOver().not()) {
+        while (isGameOver().not()) {
             currentRound++
             doRound(currentRound)
-        }*/
-        currentRound++
-        doRound(currentRound)
+            println("${players[0].name}: ${players[0].points} - ${players[1].name}: ${players[1].points} - ${players[2].name}: ${players[2].points} - ${players[3].name}: ${players[3].points}\n")
+        }
+        println("\nFinal Scores")
+        for (player in players) {
+            println("$player: ${player.points}")
+        }
     }
 
     fun printStartingHands() {
