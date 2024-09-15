@@ -1,7 +1,6 @@
 package card
 
-import java.util.Collections
-import java.util.LinkedList
+import java.util.*
 
 open class SortedCardCollection : LinkedList<xyz.jonasdewever.card.ICard>() {
 
@@ -9,4 +8,5 @@ open class SortedCardCollection : LinkedList<xyz.jonasdewever.card.ICard>() {
     fun sort() = Collections.sort(this)
 
     fun calculatePoints(): Int = sumOf { it.getPointsValue() }
+    fun getPlusPoints(): Int = filter { it.getPointsValue() > 0 }.sumOf { it.getPointsValue() }
 }

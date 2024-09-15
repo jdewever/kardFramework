@@ -6,7 +6,7 @@ import kotlin.enums.EnumEntries
 import kotlin.reflect.KClass
 
 class Deck<T : ICard>(
-    private val cardType: KClass<T>, ranks: EnumEntries<Rank> = Rank.entries
+    cardType: KClass<T>, ranks: EnumEntries<Rank> = Rank.entries
 ) : SortedCardCollection() {
 
     init {
@@ -22,7 +22,7 @@ class Deck<T : ICard>(
     fun split(playerAmount: Int): ArrayList<Hand> {
         val hands = arrayListOf<Hand>()
         for (i in 0 until playerAmount) hands.add(Hand())
-        
+
         val cardIterator = iterator()
         var playerDeal: Int = 0
         while (cardIterator.hasNext()) {

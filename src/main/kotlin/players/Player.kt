@@ -8,7 +8,9 @@ import xyz.jonasdewever.hearts.Round
 
 abstract class Player(val name: String) {
     lateinit var hand: Hand
-    var points = 0 // todo find better place for this
+    var roundPoints = 0
+    var totalPoints = 0
+    val cardsTaken = Hand()
 
     abstract fun playCard(round: Round): ICard
 
@@ -44,6 +46,9 @@ abstract class Player(val name: String) {
 
         return validPlays
     }
+
+    fun hasCard(card: ICard): Boolean = hand.contains(card)
+    fun tookJack(): Boolean = cardsTaken.contains(Card.DiamondJack)
 
     override fun toString(): String {
         return name

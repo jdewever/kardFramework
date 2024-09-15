@@ -4,18 +4,25 @@ import card.Deck
 import xyz.jonasdewever.players.Player
 
 class Round(
-    private val players: List<Player>, val roundNumber: Int, private val deck: Deck<Card> = Deck(Card::class)
+    private val game: Hearts,
+    private val players: List<Player>,
+    val roundNumber: Int,
+    private val deck: Deck<Card> = Deck(Card::class)
 ) {
     var pointsBroken = false
-    private lateinit var lastTrick: Trick
+    private val allTricks: MutableList<Trick> = mutableListOf()
     lateinit var currentTrick: Trick
-    private lateinit var startingPlayer: Player
+    private var startingPlayer: Player = players[0]
+    var queenTaker: Player? = null
+    var jackTaker: Player? = null
 
     init {
         val hands = deck.split(players.size)
-        for (index in 0..<players.size) {
-            players[index].hand = hands[index]
-            players[index].hand.sort()
+        for (player in players) {
+            player.roundPoints = 0
+            player.hand = hands.removeFirst()
+            player.hand.sort()
+            if (player.hasCard(Card.ClubTwo)) startingPlayer = player
         }
     }
 
@@ -26,18 +33,42 @@ class Round(
 
     fun playTrick() {
         currentTrick = Trick(players.indexOf(startingPlayer))
-        for (i in 0..<players.size) {
+        for (i in players.indices) {
             val player = players[(players.indexOf(startingPlayer) + i) % 4]
             val card = player.playCard(this)
             currentTrick.add(card)
         }
 
+        if (currentTrick.hasPlusPoints()) pointsBroken = true
+
         val eater = players[currentTrick.getEaterIndex()]
         val pointsToTake = currentTrick.calculatePoints()
-        eater.points += pointsToTake
-//        println("Trick: $currentTrick - Eater: $eater - Points: $pointsToTake")
-//        println("${players[0].name}: ${players[0].points} - ${players[1].name}: ${players[1].points} - ${players[2].name}: ${players[2].points} - ${players[3].name}: ${players[3].points}\n")
+        eater.roundPoints += pointsToTake
+
+        eater.cardsTaken.addAll(currentTrick)
+
+        if (currentTrick.hasDiamondJack()) jackTaker = eater
+        if (currentTrick.hasSpadeQueen()) queenTaker = eater
+
+        // Set starting player for next trick
         setStartingPlayer(players[currentTrick.getEaterIndex()])
+        allTricks.add(currentTrick)
+    }
+
+    fun whoShotMoon(): Player? = players.singleOrNull { it.cardsTaken.getPlusPoints() == 26 }
+
+    fun createReport(): RoundReport {
+        val playersWithPoints = players.zip(players.map { it.totalPoints })
+        val moonShooter = whoShotMoon()
+
+        val prevPoints = game.reportsPerRound.lastOrNull()?.playersWithPoints
+        val playersWithPointDelta =
+            if (prevPoints != null) players.zip(players.map { player -> player.totalPoints - prevPoints.single { it.first == player }.second }) else playersWithPoints
+
+
+        return RoundReport(
+            roundNumber, playersWithPoints, playersWithPointDelta, queenTaker!!, jackTaker!!, moonShooter
+        )
     }
 
     fun passCards() {
