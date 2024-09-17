@@ -24,7 +24,7 @@ class Hearts(p1: Player, p2: Player, p3: Player, p4: Player) : Game() {
         while (!currentRound.isRoundOver()) {
             currentRound.playTrick()
         }
-
+        
         moonShooting(currentRound)
 
         // round is over, do points thingy
@@ -36,6 +36,9 @@ class Hearts(p1: Player, p2: Player, p3: Player, p4: Player) : Game() {
         // create round report
         val roundReport = currentRound.createReport()
         reportsPerRound.add(roundReport)
+
+
+        players.forEach { it.cardsTaken.clear() }
     }
 
     // todo option for new, old or mixed (mixed atm)
@@ -55,8 +58,7 @@ class Hearts(p1: Player, p2: Player, p3: Player, p4: Player) : Game() {
             // or simulated winner would be the shooter
             // do old moon
             if (simPoints.all { it.second < 100 } || multipleUltimateLosers || simWinner == shooter) doOldMoon(
-                shooter,
-                round.jackTaker
+                shooter, round.jackTaker
             )
             // when the game would end with
             // one distinct loser

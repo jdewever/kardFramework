@@ -46,6 +46,7 @@ class Round(
         eater.roundPoints += pointsToTake
 
         eater.cardsTaken.addAll(currentTrick)
+        eater.cardsTaken.sort()
 
         if (currentTrick.hasDiamondJack()) jackTaker = eater
         if (currentTrick.hasSpadeQueen()) queenTaker = eater
@@ -64,7 +65,6 @@ class Round(
         val prevPoints = game.reportsPerRound.lastOrNull()?.playersWithPoints
         val playersWithPointDelta =
             if (prevPoints != null) players.zip(players.map { player -> player.totalPoints - prevPoints.single { it.first == player }.second }) else playersWithPoints
-
 
         return RoundReport(
             roundNumber, playersWithPoints, playersWithPointDelta, queenTaker!!, jackTaker!!, moonShooter
